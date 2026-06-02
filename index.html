@@ -112,7 +112,7 @@
 
   <main class="content">
     <div class="topbar">
-      <div><h2 id="pageTitle">Dashboard</h2><p class="muted">Protótipo funcional — dados permanecem enquanto a página estiver aberta.</p></div>
+      <div><h2 id="pageTitle">Dashboard</h2><p class="muted">Versão final — dados salvos no celular automaticamente.</p></div>
       <div class="pill" id="dataPill">Terça, 02 Jun • 12:21</div>
     </div>
 
@@ -244,10 +244,11 @@
       <div class="list-grid">
         <div class="card">
           <h3>Backup manual</h3>
-          <p class="muted" style="margin-bottom:var(--space-4)">Exporte os dados do app em JSON para guardar no celular, WhatsApp ou Google Drive. Para restaurar, selecione o arquivo exportado anteriormente.</p>
+          <p class="muted" style="margin-bottom:var(--space-4)">Os dados agora ficam salvos neste aparelho automaticamente. Exporte o JSON para backup e restaure quando quiser.</p>
           <div class="actions">
             <button class="btn btn-primary" onclick="exportBackup()">💾 Fazer backup agora</button>
             <button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">📂 Restaurar backup</button>
+            <button class="btn btn-secondary" onclick="clearAllData()">🗑️ Apagar dados do aparelho</button>
           </div>
           <input id="restoreFile" type="file" accept="application/json" style="display:none" onchange="importBackup(event)" />
         </div>
@@ -297,8 +298,7 @@
 </div>
 
 <script>
-  let vendas = [];
-  let itens = [
+  const DEFAULT_ITENS = [
     { id:1, nome:'Corte', tipo:'servico', valor:25.00, status:'ativo' },
     { id:2, nome:'Barba', tipo:'servico', valor:15.00, status:'ativo' },
     { id:3, nome:'Cavanhaque', tipo:'servico', valor:10.00, status:'ativo' },
@@ -310,8 +310,45 @@
     { id:9, nome:'Platinado', tipo:'servico', valor:70.00, status:'ativo' },
     { id:10, nome:'Pomada', tipo:'produto', valor:20.00, status:'ativo' },
   ];
+  const STORAGE_KEY = 'araujo_barber_pwa_v1';
+  let vendas = [];
+  let itens = JSON.parse(JSON.stringify(DEFAULT_ITENS));
   let clientes = [];
   let agendamentos = [];
+
+  function saveData() {
+    const payload = { vendas, itens, clientes, agendamentos };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  }
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      vendas = Array.isArray(parsed.vendas) ? parsed.vendas : [];
+      itens = Array.isArray(parsed.itens) && parsed.itens.length ? parsed.itens : JSON.parse(JSON.stringify(DEFAULT_ITENS));
+      clientes = Array.isArray(parsed.clientes) ? parsed.clientes : [];
+      agendamentos = Array.isArray(parsed.agendamentos) ? parsed.agendamentos : [];
+    } catch (e) {
+      itens = JSON.parse(JSON.stringify(DEFAULT_ITENS));
+      vendas = [];
+      clientes = [];
+      agendamentos = [];
+    }
+  }
+
+  function clearAllData() {
+    if (!confirm('Isso vai apagar todos os dados salvos neste aparelho. Deseja continuar?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('backup_last');
+    vendas = [];
+    itens = JSON.parse(JSON.stringify(DEFAULT_ITENS));
+    clientes = [];
+    agendamentos = [];
+    refreshAll();
+    alert('Dados apagados com sucesso.');
+  }
 
   const money = n => 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   const fmt = v => parseFloat(String(v).replace(',','.')) || 0;
@@ -389,6 +426,7 @@
       if (item) { total += item.valor; nomes.push(item.nome); }
     });
     vendas.push({ id:Date.now(), item:nomes.join(' + '), cliente, pagamento, valor:total, tipo:'servico', hora, obs });
+    saveData();
     closeSaleModal();
     refreshAll();
   }
@@ -410,6 +448,7 @@
     const status = document.getElementById('cadStatus').value;
     if (!nome) return alert('Informe o nome do item.');
     itens.push({ id:Date.now(), nome, tipo, valor, status });
+    saveData();
     document.getElementById('cadNome').value = '';
     document.getElementById('cadValor').value = '';
     refreshAll();
@@ -421,6 +460,7 @@
     const telefone = document.getElementById('cliTelefone').value.trim();
     if (!nome) return alert('Informe o nome do cliente.');
     clientes.push({ id:Date.now(), nome, telefone, visitas:0, ultima:'-', gasto:0 });
+    saveData();
     document.getElementById('cliNome').value = '';
     document.getElementById('cliTelefone').value = '';
     refreshAll();
@@ -453,6 +493,7 @@
     const servico = nomes.length ? nomes.join(' + ') : 'Não especificado';
     const valor = fmt(document.getElementById('agValor').value);
     agendamentos.push({ id:Date.now(), cliente, servico, data, hora, valor, status:'aguardando' });
+    saveData();
     document.getElementById('agData').value = '';
     document.getElementById('agHora').value = '';
     document.getElementById('agValor').value = '0,00';
@@ -467,6 +508,7 @@
       ag.status = 'realizado';
       vendas.push({ id:Date.now(), item:ag.servico, cliente:ag.cliente, pagamento:'PIX', valor:ag.valor, tipo:'servico', hora:ag.hora, obs:'' });
     } else { ag.status = 'nao_realizado'; }
+    saveData();
     refreshAll();
   }
 
@@ -507,6 +549,7 @@
         if (p.agendamentos) agendamentos = p.agendamentos;
         if (p.backup_freq) document.getElementById('backupFreq').value = p.backup_freq;
         if (p.exported_at) { try { localStorage.setItem('backup_last', new Date(p.exported_at).toLocaleString('pt-BR')); } catch(e) {} }
+        saveData();
         refreshAll(); alert('Backup restaurado com sucesso.');
       } catch(e) { alert('Arquivo de backup inválido.'); }
     };
@@ -605,6 +648,7 @@
   document.querySelectorAll('.nav button').forEach(b=>{ b.addEventListener('click',()=>navTo(b.dataset.panel)); });
 
   // Init
+  loadData();
   refreshAll();
 </script>
 
