@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Araujo Barber Shop</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#171717">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Araujo Barber Shop">
+  <link rel="apple-touch-icon" href="icon-180x180.png">
+
+  <style>
+    :root {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;
+      --space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;
+      --color-bg:#171717;--color-surface:#1f1f1f;--color-surface-2:#262626;
+      --color-border:rgba(255,255,255,0.08);--color-text:#f5f5f5;
+      --color-text-muted:#b9b9b9;--color-text-faint:#8d8d8d;
+      --color-primary:#c62828;--color-primary-hover:#a81f1f;
+      --color-primary-soft:rgba(198,40,40,0.14);
+      --radius-sm:.5rem;--radius-md:.875rem;--radius-lg:1.25rem;
+      --shadow-md:0 10px 24px rgba(0,0,0,0.28);
+      --font-body:Inter,system-ui,sans-serif;
+      --transition:180ms cubic-bezier(0.16,1,0.3,1);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;overflow:hidden}
+    body{font-family:var(--font-body);background:radial-gradient(circle at top left,rgba(198,40,40,0.12),transparent 22%),radial-gradient(circle at bottom right,rgba(198,40,40,0.08),transparent 18%),var(--color-bg);color:var(--color-text);font-size:var(--text-base)}
+    button,input,select{font:inherit}
+    .app{display:grid;grid-template-columns:280px 1fr;height:100dvh}
+    .sidebar{background:linear-gradient(180deg,#121212 0%,#191919 100%);border-right:1px solid var(--color-border);padding:var(--space-6);overflow-y:auto}
+    .brand{display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-8)}
+    .brand-logo{width:62px;height:62px;border-radius:50%;background:#000;border:2px solid rgba(255,255,255,0.08);display:grid;place-items:center;font-size:var(--text-xs);font-weight:700;letter-spacing:.08em;text-align:center;line-height:1.1}
+    .brand h1{font-size:var(--text-lg)}
+    .brand p,.welcome,.muted{color:var(--color-text-muted)}
+    .welcome{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-6)}
+    .welcome strong{color:var(--color-text);display:block;margin-top:var(--space-1)}
+    .nav{display:grid;gap:var(--space-2)}
+    .nav button{width:100%;text-align:left;color:var(--color-text);background:transparent;border:1px solid transparent;padding:var(--space-4);border-radius:var(--radius-md);display:flex;align-items:center;gap:var(--space-3);cursor:pointer;transition:var(--transition)}
+    .nav button:hover,.nav button.active{background:var(--color-primary-soft);border-color:rgba(198,40,40,0.25)}
+    .content{overflow-y:auto;padding:var(--space-6)}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:var(--space-4);margin-bottom:var(--space-6)}
+    .topbar h2{font-size:var(--text-xl)}
+    .pill{padding:.55rem .85rem;border-radius:999px;background:var(--color-surface);border:1px solid var(--color-border);color:var(--color-text-muted);font-size:var(--text-sm)}
+    .panel{display:none;gap:var(--space-6)}
+    .panel.active{display:grid}
+    .hero-grid,.stats-grid,.form-grid,.list-grid{display:grid;gap:var(--space-5)}
+    .hero-grid{grid-template-columns:1.45fr 1fr}
+    .stats-grid{grid-template-columns:repeat(4,1fr)}
+    .form-grid{grid-template-columns:repeat(2,1fr)}
+    .list-grid{grid-template-columns:1.2fr .8fr}
+    .card{background:rgba(31,31,31,.92);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-5);box-shadow:var(--shadow-md)}
+    .card h3{font-size:var(--text-lg);margin-bottom:var(--space-2)}
+    .amount{font-size:clamp(2rem,1.6rem + 1.4vw,2.7rem);font-weight:800;letter-spacing:-.03em;margin:var(--space-2) 0 var(--space-4);font-variant-numeric:tabular-nums}
+    .kpi-value{font-size:var(--text-xl);font-weight:800;font-variant-numeric:tabular-nums;margin-bottom:var(--space-1)}
+    .split{display:flex;justify-content:space-between;align-items:center;gap:var(--space-4);padding:var(--space-3) 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .split:last-child{border-bottom:0}
+    .actions{display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-4)}
+    .btn{border:0;border-radius:.9rem;padding:.95rem 1.2rem;cursor:pointer;transition:var(--transition)}
+    .btn-primary{background:var(--color-primary);color:#fff;font-weight:700}
+    .btn-primary:hover{background:var(--color-primary-hover)}
+    .btn-secondary{background:var(--color-surface-2);color:var(--color-text);border:1px solid var(--color-border)}
+    .btn-sm{padding:.5rem .75rem;font-size:var(--text-sm);border-radius:.6rem}
+    .quick-sale{display:grid;gap:var(--space-4);margin-top:var(--space-4)}
+    label{display:grid;gap:var(--space-2);color:var(--color-text-muted);font-size:var(--text-sm)}
+    input,select{width:100%;background:#121212;border:1px solid var(--color-border);color:var(--color-text);border-radius:var(--radius-md);padding:.9rem 1rem;outline:none}
+    input:focus,select:focus{border-color:rgba(198,40,40,.55);box-shadow:0 0 0 3px rgba(198,40,40,.14)}
+    .item-list{display:grid;gap:var(--space-3);margin-top:var(--space-3)}
+    .item{background:var(--color-surface-2);border:1px solid rgba(255,255,255,.05);border-radius:var(--radius-md);padding:var(--space-4);display:flex;justify-content:space-between;gap:var(--space-4);align-items:flex-start}
+    .item small{color:var(--color-text-faint);display:block;margin-top:var(--space-1)}
+    .tag{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .6rem;border-radius:999px;background:var(--color-primary-soft);color:#ffb0b0;font-size:var(--text-xs);margin-bottom:var(--space-2)}
+    .status-ok{color:#8ee08e}
+    .status-warn{color:#ffb0b0}
+    .section-head{display:flex;justify-content:space-between;align-items:center;gap:var(--space-4);margin-bottom:var(--space-3)}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:50;padding:var(--space-4)}
+    .modal-overlay.active{display:flex}
+    .modal-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6);width:100%;max-width:520px;max-height:90dvh;overflow-y:auto}
+    .modal-card h3{margin-bottom:var(--space-4)}
+    .multi-servicos{display:grid;gap:var(--space-3);margin-top:var(--space-3);padding:var(--space-4);background:#121212;border-radius:var(--radius-md);border:1px solid var(--color-border)}
+    .multi-servico-row{display:flex;gap:var(--space-3);align-items:center}
+    .multi-servico-row select{flex:1}
+    .multi-servico-row button{white-space:nowrap}
+    .total-preview{background:var(--color-primary-soft);border:1px solid rgba(198,40,40,.25);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);margin-top:var(--space-3);font-weight:700;color:#ffb0b0;font-size:var(--text-lg)}
+    @media(max-width:1024px){.app{grid-template-columns:88px 1fr}.brand h1,.brand p,.welcome p,.welcome strong,.nav span{display:none}.brand{justify-content:center}.welcome{padding:var(--space-3)}.nav button{justify-content:center}.hero-grid,.stats-grid,.form-grid,.list-grid{grid-template-columns:1fr}}
+    @media(max-width:720px){html,body{overflow:auto}.app{display:block;height:auto}.sidebar{padding:var(--space-4);border-right:0;border-bottom:1px solid var(--color-border)}.nav{grid-template-columns:repeat(3,1fr)}.content{padding:var(--space-4)}.topbar{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">ARAUJO<br>BARBER</div>
+      <div><h1>Araujo Barber Shop</h1><p>Controle interno</p></div>
+    </div>
+    <div class="welcome"><p>Bem-vindo</p><strong>Olá Samuel!</strong></div>
+    <nav class="nav">
+      <button class="active" data-panel="dashboard">🏠 <span>Dashboard</span></button>
+      <button data-panel="relatorios">📊 <span>Relatório</span></button>
+      <button data-panel="cadastro">✂️ <span>Produtos/Serviços</span></button>
+      <button data-panel="clientes">👤 <span>Clientes</span></button>
+      <button data-panel="agenda">🗓️ <span>Agenda</span></button>
+      <button data-panel="backup">💾 <span>Backup</span></button>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <div class="topbar">
+      <div><h2 id="pageTitle">Dashboard</h2><p class="muted">Protótipo funcional — dados permanecem enquanto a página estiver aberta.</p></div>
+      <div class="pill" id="dataPill">Terça, 02 Jun • 12:21</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section class="panel active" id="dashboard">
+      <div class="hero-grid">
+        <div class="card">
+          <span class="tag">Resumo do dia</span>
+          <h3>Faturamento de hoje</h3>
+          <div class="amount" id="dashTotal">R$ 0,00</div>
+          <p class="muted" id="dashCount">Nenhuma venda hoje.</p>
+          <div class="actions">
+            <button class="btn btn-primary" onclick="openSaleModal()">+ Nova venda</button>
+            <button class="btn btn-secondary" onclick="navTo('agenda')">Abrir agenda</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-head"><h3>Agenda de hoje</h3><span class="muted" id="dashAgendaCount">0 compromissos</span></div>
+          <div class="item-list" id="dashAgendaList"><p class="muted">Nenhum agendamento cadastrado.</p></div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="card"><div class="kpi-value" id="kpiAtendimentos">0</div><p class="muted">Atendimentos realizados</p></div>
+        <div class="card"><div class="kpi-value" id="kpiProdutos">0</div><p class="muted">Produtos vendidos</p></div>
+        <div class="card"><div class="kpi-value" id="kpiTicket">R$ 0,00</div><p class="muted">Ticket médio</p></div>
+        <div class="card"><div class="kpi-value" id="kpiPendente">0</div><p class="muted">Agendamentos pendentes</p></div>
+      </div>
+      <div class="card">
+        <div class="section-head"><h3>Últimas vendas</h3><span class="muted">Hoje</span></div>
+        <div class="item-list" id="dashVendasList"><p class="muted">Nenhuma venda registrada.</p></div>
+      </div>
+    </section>
+
+    <!-- RELATORIOS -->
+    <section class="panel" id="relatorios">
+      <div class="hero-grid">
+        <div class="card">
+          <div class="section-head"><h3>Relatório diário</h3><select style="max-width:180px" id="relPeriodo"><option>Dia</option><option>Semana</option><option>Mês</option></select></div>
+          <div class="amount" id="relTotal">R$ 0,00</div>
+          <p class="muted" id="relDesc">Nenhum atendimento no período.</p>
+          <div class="stats-grid" style="grid-template-columns:repeat(2,1fr);margin-top:1.25rem">
+            <div class="card" style="padding:1rem"><div class="kpi-value" id="relAtendimentos">0</div><p class="muted">Atendimentos</p></div>
+            <div class="card" style="padding:1rem"><div class="kpi-value" id="relServicosDif">0</div><p class="muted">Serviços diferentes</p></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Recebimentos</h3>
+          <div class="split"><span>PIX</span><strong id="relPix">R$ 0,00</strong></div>
+          <div class="split"><span>Dinheiro</span><strong id="relDinheiro">R$ 0,00</strong></div>
+          <div class="split"><span>Débito</span><strong id="relDebito">R$ 0,00</strong></div>
+          <div class="split"><span>Crédito</span><strong id="relCredito">R$ 0,00</strong></div>
+        </div>
+      </div>
+      <div class="list-grid">
+        <div class="card"><h3>Serviços mais feitos</h3><div class="item-list" id="relServicosMais"><p class="muted">Nenhum serviço registrado.</p></div></div>
+        <div class="card"><h3>Movimento do dia</h3><div class="item-list" id="relMovimento"><p class="muted">Nenhum movimento.</p></div></div>
+      </div>
+      <div class="card">
+        <h3>Indicadores</h3>
+        <div class="split"><span>Ticket médio</span><strong id="relTicket">R$ 0,00</strong></div>
+        <div class="split"><span>Agendados</span><strong id="relAgendados">0</strong></div>
+        <div class="split"><span>Realizados</span><strong id="relRealizados">0</strong></div>
+        <div class="split"><span>Não realizados</span><strong id="relNaoRealizados">0</strong></div>
+      </div>
+    </section>
+
+    <!-- CADASTRO -->
+    <section class="panel" id="cadastro">
+      <div class="list-grid">
+        <div class="card">
+          <h3>Cadastrar produtos e serviços</h3>
+          <div class="quick-sale form-grid">
+            <label>Tipo<select id="cadTipo"><option value="servico">Serviço</option><option value="produto">Produto</option></select></label>
+            <label>Nome<input id="cadNome" placeholder="Ex: Corte degradê" /></label>
+            <label>Valor<input id="cadValor" placeholder="0,00" /></label>
+            <label>Status<select id="cadStatus"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></label>
+          </div>
+          <div class="actions"><button class="btn btn-primary" onclick="addItem()">Salvar item</button></div>
+        </div>
+        <div class="card"><h3>Itens cadastrados</h3><div class="item-list" id="cadLista"><p class="muted">Nenhum item cadastrado.</p></div></div>
+      </div>
+    </section>
+
+    <!-- CLIENTES -->
+    <section class="panel" id="clientes">
+      <div class="list-grid">
+        <div class="card">
+          <h3>Cadastrar cliente</h3>
+          <div class="quick-sale form-grid">
+            <label>Nome<input id="cliNome" placeholder="Nome completo" /></label>
+            <label>Telefone<input id="cliTelefone" placeholder="(31) 99999-9999" /></label>
+          </div>
+          <div class="actions"><button class="btn btn-primary" onclick="addCliente()">Salvar cliente</button></div>
+          <label style="margin-top:1rem">Buscar cliente<input id="cliBusca" placeholder="Nome ou telefone" oninput="filterClientes()" /></label>
+          <div class="item-list" id="cliLista"><p class="muted">Nenhum cliente cadastrado.</p></div>
+        </div>
+        <div class="card">
+          <h3>Histórico do cliente</h3>
+          <p class="muted" id="cliInfoHist">Selecione um cliente para ver o histórico.</p>
+          <div class="item-list" id="cliHistorico"><p class="muted">Sem histórico.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AGENDA -->
+    <section class="panel" id="agenda">
+      <div class="list-grid">
+        <div class="card">
+          <h3>Novo agendamento</h3>
+          <div class="quick-sale form-grid">
+            <label>Cliente<select id="agCliente" onchange="handleClienteRedirect('agCliente',true)"></select></label>
+            <label>Data<input id="agData" type="text" placeholder="dd/mm/aaaa" /></label>
+            <label>Horário<input id="agHora" type="text" placeholder="hh:mm" /></label>
+            <label>Valor previsto<input id="agValor" placeholder="0,00" /></label>
+          </div>
+          <div style="margin-top:1rem">
+            <p class="muted" style="margin-bottom:.75rem;font-size:var(--text-sm)">Serviços do atendimento</p>
+            <div id="agServicosContainer"></div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:.75rem" onclick="addServicoAgRow()">+ Adicionar serviço</button>
+          </div>
+          <div class="actions"><button class="btn btn-primary" onclick="addAgendamento()">Agendar horário</button></div>
+        </div>
+        <div class="card"><h3>Agendamentos do dia</h3><div class="item-list" id="agLista"><p class="muted">Nenhum agendamento.</p></div></div>
+      </div>
+    </section>
+
+    <!-- BACKUP -->
+    <section class="panel" id="backup">
+      <div class="list-grid">
+        <div class="card">
+          <h3>Backup manual</h3>
+          <p class="muted" style="margin-bottom:var(--space-4)">Exporte os dados do app em JSON para guardar no celular, WhatsApp ou Google Drive. Para restaurar, selecione o arquivo exportado anteriormente.</p>
+          <div class="actions">
+            <button class="btn btn-primary" onclick="exportBackup()">💾 Fazer backup agora</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">📂 Restaurar backup</button>
+          </div>
+          <input id="restoreFile" type="file" accept="application/json" style="display:none" onchange="importBackup(event)" />
+        </div>
+        <div class="card">
+          <h3>Configurações de backup</h3>
+          <label style="margin-bottom:1rem">Frequência de lembrete
+            <select id="backupFreq"><option value="nunca">Nunca</option><option value="semanal">Semanal</option><option value="quinzenal">Quinzenal</option></select>
+          </label>
+          <div class="split"><span>Último backup</span><strong id="lastBackup">Nenhum realizado</strong></div>
+          <div class="split"><span>Total de registros</span><strong id="backupCount">0</strong></div>
+          <div class="split"><span>Status</span><strong id="backupStatus" style="color:#8ee08e">Pronto para exportar</strong></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Conteúdo do backup</h3>
+        <div class="item-list">
+          <div class="item"><div><strong>Serviços / Produtos</strong><small>Cadastro com preços e status</small></div><strong id="countServicos">0</strong></div>
+          <div class="item"><div><strong>Clientes</strong><small>Cadastro e histórico de visitas</small></div><strong id="countClientes">0</strong></div>
+          <div class="item"><div><strong>Vendas</strong><small>Movimento financeiro registrado</small></div><strong id="countVendas">0</strong></div>
+          <div class="item"><div><strong>Agendamentos</strong><small>Agenda com status de confirmação</small></div><strong id="countAgenda">0</strong></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- MODAL NOVA VENDA -->
+<div class="modal-overlay" id="saleModal">
+  <div class="modal-card">
+    <h3>Nova venda</h3>
+    <div class="quick-sale form-grid">
+      <label>Forma de pagamento<select id="salePagamento"><option>PIX</option><option>Dinheiro</option><option>Débito</option><option>Crédito</option></select></label>
+      <label>Cliente<select id="saleCliente" onchange="handleClienteRedirect('saleCliente')"></select></label>
+      <label>Observação<input id="saleObs" placeholder="Opcional" /></label>
+    </div>
+    <div style="margin-top:1rem">
+      <p class="muted" style="margin-bottom:.75rem;font-size:var(--text-sm)">Serviços / produtos do atendimento</p>
+      <div id="saleServicosContainer"></div>
+      <button class="btn btn-secondary btn-sm" style="margin-top:.75rem" onclick="addServicoSaleRow()">+ Adicionar item</button>
+    </div>
+    <div class="total-preview" id="saleTotalPreview">Total: R$ 0,00</div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="addSale()">Salvar venda</button>
+      <button class="btn btn-secondary" onclick="closeSaleModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let vendas = [];
+  let itens = [
+    { id:1, nome:'Corte', tipo:'servico', valor:25.00, status:'ativo' },
+    { id:2, nome:'Barba', tipo:'servico', valor:15.00, status:'ativo' },
+    { id:3, nome:'Cavanhaque', tipo:'servico', valor:10.00, status:'ativo' },
+    { id:4, nome:'Bigode', tipo:'servico', valor:5.00, status:'ativo' },
+    { id:5, nome:'Pezinho', tipo:'servico', valor:10.00, status:'ativo' },
+    { id:6, nome:'Sobrancelha', tipo:'servico', valor:5.00, status:'ativo' },
+    { id:7, nome:'Luzes', tipo:'servico', valor:50.00, status:'ativo' },
+    { id:8, nome:'Pigmentação', tipo:'servico', valor:15.00, status:'ativo' },
+    { id:9, nome:'Platinado', tipo:'servico', valor:70.00, status:'ativo' },
+    { id:10, nome:'Pomada', tipo:'produto', valor:20.00, status:'ativo' },
+  ];
+  let clientes = [];
+  let agendamentos = [];
+
+  const money = n => 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const fmt = v => parseFloat(String(v).replace(',','.')) || 0;
+
+  // ── Multi-serviço VENDA ─────────────────────────────────────
+  function buildItemOpts() {
+    return itens.filter(i=>i.status==='ativo').map(i=>'<option value="'+i.id+'">'+i.nome+' • '+money(i.valor)+'</option>').join('');
+  }
+
+  function addServicoSaleRow() {
+    const c = document.getElementById('saleServicosContainer');
+    const row = document.createElement('div');
+    row.className = 'multi-servico-row';
+    row.innerHTML = '<select onchange="calcSaleTotal()">' + buildItemOpts() + '</select>' +
+      '<button class="btn btn-secondary btn-sm" onclick="this.parentElement.remove();calcSaleTotal()">✕</button>';
+    c.appendChild(row);
+    calcSaleTotal();
+  }
+
+  function calcSaleTotal() {
+    const rows = document.querySelectorAll('#saleServicosContainer .multi-servico-row select');
+    let total = 0;
+    rows.forEach(s => {
+      const item = itens.find(i=>i.id==s.value);
+      if (item) total += item.valor;
+    });
+    document.getElementById('saleTotalPreview').textContent = 'Total: ' + money(total);
+  }
+
+  // ── Multi-serviço AGENDA ────────────────────────────────────
+  function addServicoAgRow() {
+    const c = document.getElementById('agServicosContainer');
+    const row = document.createElement('div');
+    row.className = 'multi-servico-row';
+    row.innerHTML = '<select onchange="calcAgTotal()">' + buildItemOpts() + '</select>' +
+      '<button class="btn btn-secondary btn-sm" onclick="this.parentElement.remove();calcAgTotal()">✕</button>';
+    c.appendChild(row);
+    calcAgTotal();
+  }
+
+  function calcAgTotal() {
+    const rows = document.querySelectorAll('#agServicosContainer .multi-servico-row select');
+    let total = 0;
+    rows.forEach(s => {
+      const item = itens.find(i=>i.id==s.value);
+      if (item) total += item.valor;
+    });
+    document.getElementById('agValor').value = total ? total.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) : '0,00';
+  }
+
+  // ── Redirect cadastrar novo cliente ─────────────────────────
+  function handleClienteRedirect(selectId, fromAgenda = false) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+    if (select.value === '__novo__') {
+      navTo('clientes');
+      if (!fromAgenda) closeSaleModal();
+      select.value = 'Venda balcão';
+      setTimeout(() => document.getElementById('cliNome').focus(), 50);
+    }
+  }
+
+  // ── Adicionar Venda ──────────────────────────────────────────
+  function addSale() {
+    const cliente = document.getElementById('saleCliente').value || 'Venda balcão';
+    const pagamento = document.getElementById('salePagamento').value;
+    const obs = document.getElementById('saleObs').value;
+    const rows = document.querySelectorAll('#saleServicosContainer .multi-servico-row select');
+    if (!rows.length) return alert('Adicione pelo menos um serviço ou produto.');
+    const hora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    let total = 0;
+    const nomes = [];
+    rows.forEach(s => {
+      const item = itens.find(i=>i.id==s.value);
+      if (item) { total += item.valor; nomes.push(item.nome); }
+    });
+    vendas.push({ id:Date.now(), item:nomes.join(' + '), cliente, pagamento, valor:total, tipo:'servico', hora, obs });
+    closeSaleModal();
+    refreshAll();
+  }
+
+  function openSaleModal() {
+    document.getElementById('saleServicosContainer').innerHTML = '';
+    document.getElementById('saleObs').value = '';
+    document.getElementById('saleTotalPreview').textContent = 'Total: R$ 0,00';
+    addServicoSaleRow();
+    document.getElementById('saleModal').classList.add('active');
+  }
+  function closeSaleModal() { document.getElementById('saleModal').classList.remove('active'); }
+
+  // ── Adicionar Item Cadastro ──────────────────────────────────
+  function addItem() {
+    const tipo = document.getElementById('cadTipo').value;
+    const nome = document.getElementById('cadNome').value.trim();
+    const valor = fmt(document.getElementById('cadValor').value);
+    const status = document.getElementById('cadStatus').value;
+    if (!nome) return alert('Informe o nome do item.');
+    itens.push({ id:Date.now(), nome, tipo, valor, status });
+    document.getElementById('cadNome').value = '';
+    document.getElementById('cadValor').value = '';
+    refreshAll();
+  }
+
+  // ── Adicionar Cliente ─────────────────────────────────────────
+  function addCliente() {
+    const nome = document.getElementById('cliNome').value.trim();
+    const telefone = document.getElementById('cliTelefone').value.trim();
+    if (!nome) return alert('Informe o nome do cliente.');
+    clientes.push({ id:Date.now(), nome, telefone, visitas:0, ultima:'-', gasto:0 });
+    document.getElementById('cliNome').value = '';
+    document.getElementById('cliTelefone').value = '';
+    refreshAll();
+  }
+
+  function selectCliente(id) {
+    const c = clientes.find(x=>x.id===id);
+    if (!c) return;
+    document.getElementById('cliInfoHist').textContent = c.nome + ' • ' + c.visitas + ' visitas • total gasto ' + money(c.gasto);
+    const hist = vendas.filter(v=>v.cliente===c.nome).slice().reverse();
+    document.getElementById('cliHistorico').innerHTML = hist.length ? hist.map(v=>'<div class="item"><div><strong>'+v.item+'</strong><small>'+v.hora+' • '+v.pagamento+'</small></div><strong>'+money(v.valor)+'</strong></div>').join('') : '<p class="muted">Sem histórico.</p>';
+  }
+
+  function filterClientes() { refreshClientes(); }
+
+  // ── Agenda ────────────────────────────────────────────────────
+  function normalizeDate(v) { const m=String(v).trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/); return m?String(v).trim():null; }
+  function normalizeTime(v) { const m=String(v).trim().match(/^(\d{2}):(\d{2})$/); return m?String(v).trim():null; }
+
+  function addAgendamento() {
+    const cliente = document.getElementById('agCliente').value || 'Venda balcão';
+    if (cliente === '__novo__') { navTo('clientes'); return; }
+    const data = normalizeDate(document.getElementById('agData').value);
+    const hora = normalizeTime(document.getElementById('agHora').value);
+    if (!data) return alert('Informe a data no formato dd/mm/aaaa.');
+    if (!hora) return alert('Informe o horário no formato hh:mm.');
+    const rows = document.querySelectorAll('#agServicosContainer .multi-servico-row select');
+    const nomes = [];
+    rows.forEach(s => { const item = itens.find(i=>i.id==s.value); if (item) nomes.push(item.nome); });
+    const servico = nomes.length ? nomes.join(' + ') : 'Não especificado';
+    const valor = fmt(document.getElementById('agValor').value);
+    agendamentos.push({ id:Date.now(), cliente, servico, data, hora, valor, status:'aguardando' });
+    document.getElementById('agData').value = '';
+    document.getElementById('agHora').value = '';
+    document.getElementById('agValor').value = '0,00';
+    document.getElementById('agServicosContainer').innerHTML = '';
+    refreshAll();
+  }
+
+  function confirmAgendamento(id, realizado) {
+    const ag = agendamentos.find(a=>a.id===id);
+    if (!ag) return;
+    if (realizado) {
+      ag.status = 'realizado';
+      vendas.push({ id:Date.now(), item:ag.servico, cliente:ag.cliente, pagamento:'PIX', valor:ag.valor, tipo:'servico', hora:ag.hora, obs:'' });
+    } else { ag.status = 'nao_realizado'; }
+    refreshAll();
+  }
+
+  // ── Backup ─────────────────────────────────────────────────
+  function updateBackupInfo() {
+    document.getElementById('countServicos').textContent = itens.length;
+    document.getElementById('countClientes').textContent = clientes.length;
+    document.getElementById('countVendas').textContent = vendas.length;
+    document.getElementById('countAgenda').textContent = agendamentos.length;
+    document.getElementById('backupCount').textContent = itens.length + clientes.length + vendas.length + agendamentos.length;
+    try { document.getElementById('lastBackup').textContent = localStorage.getItem('backup_last') || 'Nenhum realizado'; } catch(e) {}
+  }
+
+  function exportBackup() {
+    const payload = { exported_at: new Date().toISOString(), backup_freq: document.getElementById('backupFreq').value, itens, clientes, vendas, agendamentos };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'araujobarber-backup-' + new Date().toISOString().slice(0,10) + '.json'; a.click();
+    URL.revokeObjectURL(url);
+    const stamp = new Date().toLocaleString('pt-BR');
+    try { localStorage.setItem('backup_last', stamp); } catch(e) {}
+    document.getElementById('lastBackup').textContent = stamp;
+    document.getElementById('backupStatus').textContent = '✓ Backup exportado';
+    document.getElementById('backupStatus').style.color = '#8ee08e';
+    updateBackupInfo();
+  }
+
+  function importBackup(event) {
+    const file = event.target.files?.[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const p = JSON.parse(reader.result);
+        if (p.itens) itens = p.itens;
+        if (p.clientes) clientes = p.clientes;
+        if (p.vendas) vendas = p.vendas;
+        if (p.agendamentos) agendamentos = p.agendamentos;
+        if (p.backup_freq) document.getElementById('backupFreq').value = p.backup_freq;
+        if (p.exported_at) { try { localStorage.setItem('backup_last', new Date(p.exported_at).toLocaleString('pt-BR')); } catch(e) {} }
+        refreshAll(); alert('Backup restaurado com sucesso.');
+      } catch(e) { alert('Arquivo de backup inválido.'); }
+    };
+    reader.readAsText(file);
+  }
+
+  // ── Refresh ───────────────────────────────────────────────────
+  function refreshDashboard() {
+    const total = vendas.reduce((s,v)=>s+v.valor,0);
+    const servicos = vendas.filter(v=>v.tipo==='servico').length;
+    const produtos = vendas.filter(v=>v.tipo==='produto').length;
+    const ticket = vendas.length ? total/vendas.length : 0;
+    const pendentes = agendamentos.filter(a=>a.status==='aguardando').length;
+    document.getElementById('dashTotal').textContent = money(total);
+    document.getElementById('dashCount').textContent = vendas.length ? vendas.length+' venda'+(vendas.length>1?'s':'')+' concluída'+(vendas.length>1?'s':'')+'.' : 'Nenhuma venda hoje.';
+    document.getElementById('kpiAtendimentos').textContent = servicos;
+    document.getElementById('kpiProdutos').textContent = produtos;
+    document.getElementById('kpiTicket').textContent = money(ticket);
+    document.getElementById('kpiPendente').textContent = pendentes;
+    const hoje = new Date().toLocaleDateString('pt-BR');
+    const agHoje = agendamentos.filter(a=>a.data===hoje);
+    document.getElementById('dashAgendaCount').textContent = agHoje.length+' compromisso'+(agHoje.length!==1?'s':'');
+    document.getElementById('dashAgendaList').innerHTML = agHoje.length ? agHoje.map(a=>{
+      let st = a.status==='realizado'?'<span class="status-ok">Realizado</span>':a.status==='nao_realizado'?'<span class="status-warn">Não realizado</span>':'<span class="status-warn">Aguardando</span>';
+      return '<div class="item"><div><strong>'+a.hora+' • '+a.cliente+'</strong><small>'+a.servico+'</small></div>'+st+'</div>';
+    }).join('') : '<p class="muted">Nenhum agendamento cadastrado.</p>';
+    const lista = vendas.slice().reverse().slice(0,8);
+    document.getElementById('dashVendasList').innerHTML = lista.length ? lista.map(v=>'<div class="item"><div><strong>'+v.item+'</strong><small>'+v.cliente+' • '+v.pagamento+' • '+v.hora+'</small></div><strong>'+money(v.valor)+'</strong></div>').join('') : '<p class="muted">Nenhuma venda registrada.</p>';
+  }
+
+  function refreshRelatorio() {
+    const total = vendas.reduce((s,v)=>s+v.valor,0);
+    const servicos = vendas.filter(v=>v.tipo==='servico').length;
+    const produtos = vendas.filter(v=>v.tipo==='produto').length;
+    const ticket = vendas.length ? total/vendas.length : 0;
+    const nomesSets = new Set(vendas.map(v=>v.item));
+    document.getElementById('relTotal').textContent = money(total);
+    document.getElementById('relDesc').textContent = vendas.length ? servicos+' atendimentos e '+produtos+' produto'+(produtos!==1?'s':'')+' no período.' : 'Nenhum atendimento no período.';
+    document.getElementById('relAtendimentos').textContent = servicos;
+    document.getElementById('relServicosDif').textContent = nomesSets.size;
+    document.getElementById('relTicket').textContent = money(ticket);
+    document.getElementById('relAgendados').textContent = agendamentos.length;
+    document.getElementById('relRealizados').textContent = agendamentos.filter(a=>a.status==='realizado').length;
+    document.getElementById('relNaoRealizados').textContent = agendamentos.filter(a=>a.status==='nao_realizado').length;
+    const pag = {PIX:0,Dinheiro:0,'Débito':0,'Crédito':0};
+    vendas.forEach(v=>{ if(pag[v.pagamento]!==undefined) pag[v.pagamento]+=v.valor; });
+    document.getElementById('relPix').textContent = money(pag['PIX']);
+    document.getElementById('relDinheiro').textContent = money(pag['Dinheiro']);
+    document.getElementById('relDebito').textContent = money(pag['Débito']);
+    document.getElementById('relCredito').textContent = money(pag['Crédito']);
+    const lista = vendas.slice().reverse();
+    document.getElementById('relMovimento').innerHTML = lista.length ? lista.map(v=>'<div class="item"><div><strong>'+v.item+'</strong><small>'+v.cliente+' • '+v.pagamento+' • '+v.hora+'</small></div><strong>'+money(v.valor)+'</strong></div>').join('') : '<p class="muted">Nenhum movimento.</p>';
+    const contagem = {};
+    vendas.forEach(v=>{ v.item.split(' + ').forEach(nome=>{ contagem[nome]=(contagem[nome]||0)+1; }); });
+    const maisFeitos = Object.entries(contagem).sort((a,b)=>b[1]-a[1]);
+    document.getElementById('relServicosMais').innerHTML = maisFeitos.length ? maisFeitos.map(([nome,qtd])=>'<div class="item"><div><strong>'+nome+'</strong><small>'+qtd+' atendimento'+(qtd>1?'s':'')+'</small></div><strong>'+qtd+'x</strong></div>').join('') : '<p class="muted">Nenhum serviço registrado.</p>';
+  }
+
+  function refreshCadastro() {
+    document.getElementById('cadLista').innerHTML = itens.length ? itens.map(i=>'<div class="item"><div><strong>'+i.nome+'</strong><small>'+(i.tipo==='servico'?'Serviço':'Produto')+' • '+i.status+'</small></div><strong>'+money(i.valor)+'</strong></div>').join('') : '<p class="muted">Nenhum item cadastrado.</p>';
+  }
+
+  function refreshClientes() {
+    const busca = (document.getElementById('cliBusca').value||'').toLowerCase();
+    const filtrados = clientes.filter(c=>c.nome.toLowerCase().includes(busca)||c.telefone.includes(busca));
+    document.getElementById('cliLista').innerHTML = filtrados.length ? filtrados.map(c=>'<div class="item"><div><strong>'+c.nome+'</strong><small>'+c.visitas+' visitas • última em '+c.ultima+'</small></div><button class="btn btn-secondary btn-sm" onclick="selectCliente('+c.id+')">Ver histórico</button></div>').join('') : '<p class="muted">Nenhum cliente cadastrado.</p>';
+    const opts = ['<option value="Venda balcão">Venda balcão</option>'].concat(clientes.map(c=>'<option value="'+c.nome+'">'+c.nome+'</option>')).concat(['<option value="__novo__">+ Cadastrar novo cliente</option>']);
+    const sc = document.getElementById('saleCliente'); if (sc) sc.innerHTML = opts.join('');
+    const ac = document.getElementById('agCliente'); if (ac) ac.innerHTML = opts.join('');
+  }
+
+  function refreshAgenda() {
+    document.getElementById('agLista').innerHTML = agendamentos.length ? agendamentos.map(a=>{
+      let st = a.status==='realizado'?'<span class="status-ok">Realizado</span>':a.status==='nao_realizado'?'<span class="status-warn">Não realizado</span>':'<span class="status-warn">Aguardando</span>';
+      let btns = a.status==='aguardando'?'<div style="display:flex;gap:.5rem;margin-top:.5rem"><button class="btn btn-secondary btn-sm" onclick="confirmAgendamento('+a.id+',true)">✓ Sim</button><button class="btn btn-secondary btn-sm" onclick="confirmAgendamento('+a.id+',false)">✕ Não</button></div>':'';
+      return '<div class="item"><div><strong>'+a.hora+' • '+a.cliente+'</strong><small>'+a.servico+' • '+(a.valor?money(a.valor):'')+'</small><small>'+a.data+'</small></div><div style="text-align:right">'+st+btns+'</div></div>';
+    }).join('') : '<p class="muted">Nenhum agendamento.</p>';
+  }
+
+  function refreshAll() {
+    refreshDashboard();
+    refreshRelatorio();
+    refreshCadastro();
+    refreshClientes();
+    refreshAgenda();
+    updateBackupInfo();
+  }
+
+  // ── Nav ───────────────────────────────────────────────────────
+  const pageLabels = { dashboard:'Dashboard', relatorios:'Relatório', cadastro:'Produtos / Serviços', clientes:'Clientes', agenda:'Agenda', backup:'Backup' };
+  function navTo(panel) {
+    document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.panel===panel));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===panel));
+    document.getElementById('pageTitle').textContent = pageLabels[panel] || panel;
+  }
+  document.querySelectorAll('.nav button').forEach(b=>{ b.addEventListener('click',()=>navTo(b.dataset.panel)); });
+
+  // Init
+  refreshAll();
+</script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+    }
+  </script>
+
+</body>
+</html>
