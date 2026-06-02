@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html data-theme="dark" lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Araujo Barber Shop</title>
-<link href="manifest.webmanifest" rel="manifest"/>
-<meta content="#171717" name="theme-color"/>
-<meta content="yes" name="apple-mobile-web-app-capable"/>
-<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
-<meta content="Araujo Barber Shop" name="apple-mobile-web-app-title"/>
-<link href="icon-180x180.png" rel="apple-touch-icon"/>
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Araujo Barber Shop</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#171717">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Araujo Barber Shop">
+  <link rel="apple-touch-icon" href="icon-180x180.png">
+
+  <style>
     :root {
       --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
       --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
@@ -90,231 +91,212 @@
     @media(max-width:1024px){.app{grid-template-columns:88px 1fr}.brand h1,.brand p,.welcome p,.welcome strong,.nav span{display:none}.brand{justify-content:center}.welcome{padding:var(--space-3)}.nav button{justify-content:center}.hero-grid,.stats-grid,.form-grid,.list-grid{grid-template-columns:1fr}}
     @media(max-width:720px){html,body{overflow:auto}.app{display:block;height:auto}.sidebar{padding:var(--space-4);border-right:0;border-bottom:1px solid var(--color-border)}.nav{grid-template-columns:repeat(3,1fr)}.content{padding:var(--space-4)}.topbar{flex-direction:column;align-items:flex-start}}
   </style>
-<style data-edit-id="native-picker-style">
-.native-picker-field {
-  color-scheme: dark;
-  min-height: 52px;
-  padding-right: 44px !important;
-  cursor: pointer;
-}
-.native-picker-field::-webkit-calendar-picker-indicator {
-  opacity: 0.9;
-  cursor: pointer;
-  filter: invert(1);
-}
-.native-picker-field::-webkit-datetime-edit,
-.native-picker-field::-webkit-datetime-edit-fields-wrapper,
-.native-picker-field::-webkit-datetime-edit-text,
-.native-picker-field::-webkit-datetime-edit-month-field,
-.native-picker-field::-webkit-datetime-edit-day-field,
-.native-picker-field::-webkit-datetime-edit-year-field,
-.native-picker-field::-webkit-datetime-edit-hour-field,
-.native-picker-field::-webkit-datetime-edit-minute-field {
-  color: inherit;
-}
-.native-picker-hint {
-  display: block;
-  margin-top: 6px;
-  color: rgba(255,255,255,.62);
-  font-size: 12px;
-}
-</style></head>
+</head>
 <body>
 <div class="app">
-<aside class="sidebar">
-<div class="brand">
-<div class="brand-logo">ARAUJO<br/>BARBER</div>
-<div><h1>Araujo Barber Shop</h1><p>Controle interno</p></div>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">ARAUJO<br>BARBER</div>
+      <div><h1>Araujo Barber Shop</h1><p>Controle interno</p></div>
+    </div>
+    <div class="welcome"><p>Bem-vindo</p><strong>Olá Samuel!</strong></div>
+    <nav class="nav">
+      <button class="active" data-panel="dashboard">🏠 <span>Dashboard</span></button>
+      <button data-panel="relatorios">📊 <span>Relatório</span></button>
+      <button data-panel="cadastro">✂️ <span>Produtos/Serviços</span></button>
+      <button data-panel="clientes">👤 <span>Clientes</span></button>
+      <button data-panel="agenda">🗓️ <span>Agenda</span></button>
+      <button data-panel="backup">💾 <span>Backup</span></button>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <div class="topbar">
+      <div><h2 id="pageTitle">Dashboard</h2><p class="muted">Versão final — dados salvos no celular automaticamente.</p></div>
+      <div class="pill" id="dataPill">Terça, 02 Jun • 12:21</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section class="panel active" id="dashboard">
+      <div class="hero-grid">
+        <div class="card">
+          <span class="tag">Resumo do dia</span>
+          <h3>Faturamento de hoje</h3>
+          <div class="amount" id="dashTotal">R$ 0,00</div>
+          <p class="muted" id="dashCount">Nenhuma venda hoje.</p>
+          <div class="actions">
+            <button class="btn btn-primary" onclick="openSaleModal()">+ Nova venda</button>
+            <button class="btn btn-secondary" onclick="navTo('agenda')">Abrir agenda</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-head"><h3>Agenda de hoje</h3><span class="muted" id="dashAgendaCount">0 compromissos</span></div>
+          <div class="item-list" id="dashAgendaList"><p class="muted">Nenhum agendamento cadastrado.</p></div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="card"><div class="kpi-value" id="kpiAtendimentos">0</div><p class="muted">Atendimentos realizados</p></div>
+        <div class="card"><div class="kpi-value" id="kpiProdutos">0</div><p class="muted">Produtos vendidos</p></div>
+        <div class="card"><div class="kpi-value" id="kpiTicket">R$ 0,00</div><p class="muted">Ticket médio</p></div>
+        <div class="card"><div class="kpi-value" id="kpiPendente">0</div><p class="muted">Agendamentos pendentes</p></div>
+      </div>
+      <div class="card">
+        <div class="section-head"><h3>Últimas vendas</h3><span class="muted">Hoje</span></div>
+        <div class="item-list" id="dashVendasList"><p class="muted">Nenhuma venda registrada.</p></div>
+      </div>
+    </section>
+
+    <!-- RELATORIOS -->
+    <section class="panel" id="relatorios">
+      <div class="hero-grid">
+        <div class="card">
+          <div class="section-head"><h3>Relatório diário</h3><select style="max-width:180px" id="relPeriodo"><option>Dia</option><option>Semana</option><option>Mês</option></select></div>
+          <div class="amount" id="relTotal">R$ 0,00</div>
+          <p class="muted" id="relDesc">Nenhum atendimento no período.</p>
+          <div class="stats-grid" style="grid-template-columns:repeat(2,1fr);margin-top:1.25rem">
+            <div class="card" style="padding:1rem"><div class="kpi-value" id="relAtendimentos">0</div><p class="muted">Atendimentos</p></div>
+            <div class="card" style="padding:1rem"><div class="kpi-value" id="relServicosDif">0</div><p class="muted">Serviços diferentes</p></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Recebimentos</h3>
+          <div class="split"><span>PIX</span><strong id="relPix">R$ 0,00</strong></div>
+          <div class="split"><span>Dinheiro</span><strong id="relDinheiro">R$ 0,00</strong></div>
+          <div class="split"><span>Débito</span><strong id="relDebito">R$ 0,00</strong></div>
+          <div class="split"><span>Crédito</span><strong id="relCredito">R$ 0,00</strong></div>
+        </div>
+      </div>
+      <div class="list-grid">
+        <div class="card"><h3>Serviços mais feitos</h3><div class="item-list" id="relServicosMais"><p class="muted">Nenhum serviço registrado.</p></div></div>
+        <div class="card"><h3>Movimento do dia</h3><div class="item-list" id="relMovimento"><p class="muted">Nenhum movimento.</p></div></div>
+      </div>
+      <div class="card">
+        <h3>Indicadores</h3>
+        <div class="split"><span>Ticket médio</span><strong id="relTicket">R$ 0,00</strong></div>
+        <div class="split"><span>Agendados</span><strong id="relAgendados">0</strong></div>
+        <div class="split"><span>Realizados</span><strong id="relRealizados">0</strong></div>
+        <div class="split"><span>Não realizados</span><strong id="relNaoRealizados">0</strong></div>
+      </div>
+    </section>
+
+    <!-- CADASTRO -->
+    <section class="panel" id="cadastro">
+      <div class="list-grid">
+        <div class="card">
+          <h3>Cadastrar produtos e serviços</h3>
+          <div class="quick-sale form-grid">
+            <label>Tipo<select id="cadTipo"><option value="servico">Serviço</option><option value="produto">Produto</option></select></label>
+            <label>Nome<input id="cadNome" placeholder="Ex: Corte degradê" /></label>
+            <label>Valor<input id="cadValor" placeholder="0,00" /></label>
+            <label>Status<select id="cadStatus"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></label>
+          </div>
+          <div class="actions"><button class="btn btn-primary" onclick="addItem()">Salvar item</button></div>
+        </div>
+        <div class="card"><h3>Itens cadastrados</h3><div class="item-list" id="cadLista"><p class="muted">Nenhum item cadastrado.</p></div></div>
+      </div>
+    </section>
+
+    <!-- CLIENTES -->
+    <section class="panel" id="clientes">
+      <div class="list-grid">
+        <div class="card">
+          <h3>Cadastrar cliente</h3>
+          <div class="quick-sale form-grid">
+            <label>Nome<input id="cliNome" placeholder="Nome completo" /></label>
+            <label>Telefone<input id="cliTelefone" placeholder="(31) 99999-9999" /></label>
+          </div>
+          <div class="actions"><button class="btn btn-primary" onclick="addCliente()">Salvar cliente</button></div>
+          <label style="margin-top:1rem">Buscar cliente<input id="cliBusca" placeholder="Nome ou telefone" oninput="filterClientes()" /></label>
+          <div class="item-list" id="cliLista"><p class="muted">Nenhum cliente cadastrado.</p></div>
+        </div>
+        <div class="card">
+          <h3>Histórico do cliente</h3>
+          <p class="muted" id="cliInfoHist">Selecione um cliente para ver o histórico.</p>
+          <div class="item-list" id="cliHistorico"><p class="muted">Sem histórico.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AGENDA -->
+    <section class="panel" id="agenda">
+      <div class="list-grid">
+        <div class="card">
+          <h3>Novo agendamento</h3>
+          <div class="quick-sale form-grid">
+            <label>Cliente<select id="agCliente" onchange="handleClienteRedirect('agCliente',true)"></select></label>
+            <label>Data<input id="agData" type="text" placeholder="dd/mm/aaaa" /></label>
+            <label>Horário<input id="agHora" type="text" placeholder="hh:mm" /></label>
+            <label>Valor previsto<input id="agValor" placeholder="0,00" /></label>
+          </div>
+          <div style="margin-top:1rem">
+            <p class="muted" style="margin-bottom:.75rem;font-size:var(--text-sm)">Serviços do atendimento</p>
+            <div id="agServicosContainer"></div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:.75rem" onclick="addServicoAgRow()">+ Adicionar serviço</button>
+          </div>
+          <div class="actions"><button class="btn btn-primary" onclick="addAgendamento()">Agendar horário</button></div>
+        </div>
+        <div class="card"><h3>Agendamentos do dia</h3><div class="item-list" id="agLista"><p class="muted">Nenhum agendamento.</p></div></div>
+      </div>
+    </section>
+
+    <!-- BACKUP -->
+    <section class="panel" id="backup">
+      <div class="list-grid">
+        <div class="card">
+          <h3>Backup manual</h3>
+          <p class="muted" style="margin-bottom:var(--space-4)">Os dados agora ficam salvos neste aparelho automaticamente. Exporte o JSON para backup e restaure quando quiser.</p>
+          <div class="actions">
+            <button class="btn btn-primary" onclick="exportBackup()">💾 Fazer backup agora</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">📂 Restaurar backup</button>
+            <button class="btn btn-secondary" onclick="clearAllData()">🗑️ Apagar dados do aparelho</button>
+          </div>
+          <input id="restoreFile" type="file" accept="application/json" style="display:none" onchange="importBackup(event)" />
+        </div>
+        <div class="card">
+          <h3>Configurações de backup</h3>
+          <label style="margin-bottom:1rem">Frequência de lembrete
+            <select id="backupFreq"><option value="nunca">Nunca</option><option value="semanal">Semanal</option><option value="quinzenal">Quinzenal</option></select>
+          </label>
+          <div class="split"><span>Último backup</span><strong id="lastBackup">Nenhum realizado</strong></div>
+          <div class="split"><span>Total de registros</span><strong id="backupCount">0</strong></div>
+          <div class="split"><span>Status</span><strong id="backupStatus" style="color:#8ee08e">Pronto para exportar</strong></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Conteúdo do backup</h3>
+        <div class="item-list">
+          <div class="item"><div><strong>Serviços / Produtos</strong><small>Cadastro com preços e status</small></div><strong id="countServicos">0</strong></div>
+          <div class="item"><div><strong>Clientes</strong><small>Cadastro e histórico de visitas</small></div><strong id="countClientes">0</strong></div>
+          <div class="item"><div><strong>Vendas</strong><small>Movimento financeiro registrado</small></div><strong id="countVendas">0</strong></div>
+          <div class="item"><div><strong>Agendamentos</strong><small>Agenda com status de confirmação</small></div><strong id="countAgenda">0</strong></div>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
-<div class="welcome"><p>Bem-vindo</p><strong>Olá Samuel!</strong></div>
-<nav class="nav">
-<button class="active" data-panel="dashboard">🏠 <span>Dashboard</span></button>
-<button data-panel="relatorios">📊 <span>Relatório</span></button>
-<button data-panel="cadastro">✂️ <span>Produtos/Serviços</span></button>
-<button data-panel="clientes">👤 <span>Clientes</span></button>
-<button data-panel="agenda">🗓️ <span>Agenda</span></button>
-<button data-panel="backup">💾 <span>Backup</span></button>
-</nav>
-</aside>
-<main class="content">
-<div class="topbar">
-<div><h2 id="pageTitle">Dashboard</h2><p class="muted">Versão final — dados salvos no celular automaticamente.</p></div>
-<div class="pill" id="dataPill">Terça, 02 Jun</div>
-</div>
-<!-- DASHBOARD -->
-<section class="panel active" id="dashboard">
-<div class="hero-grid">
-<div class="card">
-<span class="tag">Resumo do dia</span>
-<h3>Faturamento de hoje</h3>
-<div class="amount" id="dashTotal">R$ 0,00</div>
-<p class="muted" id="dashCount">Nenhuma venda hoje.</p>
-<div class="actions">
-<button class="btn btn-primary" onclick="openSaleModal()">+ Nova venda</button>
-<button class="btn btn-secondary" onclick="navTo('agenda')">Abrir agenda</button>
-</div>
-</div>
-<div class="card">
-<div class="section-head"><h3>Agenda de hoje</h3><span class="muted" id="dashAgendaCount">0 compromissos</span></div>
-<div class="item-list" id="dashAgendaList"><p class="muted">Nenhum agendamento cadastrado.</p></div>
-</div>
-</div>
-<div class="stats-grid">
-<div class="card"><div class="kpi-value" id="kpiAtendimentos">0</div><p class="muted">Atendimentos realizados</p></div>
-<div class="card"><div class="kpi-value" id="kpiProdutos">0</div><p class="muted">Produtos vendidos</p></div>
-<div class="card"><div class="kpi-value" id="kpiTicket">R$ 0,00</div><p class="muted">Ticket médio</p></div>
-<div class="card"><div class="kpi-value" id="kpiPendente">0</div><p class="muted">Agendamentos pendentes</p></div>
-</div>
-<div class="card">
-<div class="section-head"><h3>Últimas vendas</h3><span class="muted">Hoje</span></div>
-<div class="item-list" id="dashVendasList"><p class="muted">Nenhuma venda registrada.</p></div>
-</div>
-</section>
-<!-- RELATORIOS -->
-<section class="panel" id="relatorios">
-<div class="hero-grid">
-<div class="card">
-<div class="section-head"><h3>Relatório diário</h3><select data-placeholder-ready="true" id="relPeriodo" style="max-width:180px"><option disabled="" selected="" value="">Selecionar</option><option>Semana</option><option>Mês</option></select></div>
-<div class="amount" id="relTotal">R$ 0,00</div>
-<p class="muted" id="relDesc">Nenhum atendimento no período.</p>
-<div class="stats-grid" style="grid-template-columns:repeat(2,1fr);margin-top:1.25rem">
-<div class="card" style="padding:1rem"><div class="kpi-value" id="relAtendimentos">0</div><p class="muted">Atendimentos</p></div>
-<div class="card" style="padding:1rem"><div class="kpi-value" id="relServicosDif">0</div><p class="muted">Serviços diferentes</p></div>
-</div>
-</div>
-<div class="card">
-<h3>Recebimentos</h3>
-<div class="split"><span>PIX</span><strong id="relPix">R$ 0,00</strong></div>
-<div class="split"><span>Dinheiro</span><strong id="relDinheiro">R$ 0,00</strong></div>
-<div class="split"><span>Débito</span><strong id="relDebito">R$ 0,00</strong></div>
-<div class="split"><span>Crédito</span><strong id="relCredito">R$ 0,00</strong></div>
-</div>
-</div>
-<div class="list-grid">
-<div class="card"><h3>Serviços mais feitos</h3><div class="item-list" id="relServicosMais"><p class="muted">Nenhum serviço registrado.</p></div></div>
-<div class="card"><h3>Movimento do dia</h3><div class="item-list" id="relMovimento"><p class="muted">Nenhum movimento.</p></div></div>
-</div>
-<div class="card">
-<h3>Indicadores</h3>
-<div class="split"><span>Ticket médio</span><strong id="relTicket">R$ 0,00</strong></div>
-<div class="split"><span>Agendados</span><strong id="relAgendados">0</strong></div>
-<div class="split"><span>Realizados</span><strong id="relRealizados">0</strong></div>
-<div class="split"><span>Não realizados</span><strong id="relNaoRealizados">0</strong></div>
-</div>
-</section>
-<!-- CADASTRO -->
-<section class="panel" id="cadastro">
-<div class="list-grid">
-<div class="card">
-<h3>Cadastrar produtos e serviços</h3>
-<div class="quick-sale form-grid">
-<label>Tipo<select data-placeholder-ready="true" id="cadTipo"><option disabled="" selected="" value="">Selecionar</option><option value="servico">Serviço</option><option value="produto">Produto</option></select></label>
-<label>Nome<input id="cadNome" placeholder="Ex: Corte degradê"/></label>
-<label>Valor<input id="cadValor" placeholder="0,00"/></label>
-<label>Status<select data-placeholder-ready="true" id="cadStatus"><option disabled="" selected="" value="">Selecionar</option><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></label>
-</div>
-<div class="actions"><button class="btn btn-primary" onclick="addItem()">Salvar item</button></div>
-</div>
-<div class="card"><h3>Itens cadastrados</h3><div class="item-list" id="cadLista"><p class="muted">Nenhum item cadastrado.</p></div></div>
-</div>
-</section>
-<!-- CLIENTES -->
-<section class="panel" id="clientes">
-<div class="list-grid">
-<div class="card">
-<h3>Cadastrar cliente</h3>
-<div class="quick-sale form-grid">
-<label>Nome<input id="cliNome" placeholder="Nome completo"/></label>
-<label>Telefone<input id="cliTelefone" placeholder="(31) 99999-9999"/></label>
-</div>
-<div class="actions"><button class="btn btn-primary" onclick="addCliente()">Salvar cliente</button></div>
-<label style="margin-top:1rem">Buscar cliente<input id="cliBusca" oninput="filterClientes()" placeholder="Nome ou telefone"/></label>
-<div class="item-list" id="cliLista"><p class="muted">Nenhum cliente cadastrado.</p></div>
-</div>
-<div class="card">
-<h3>Histórico do cliente</h3>
-<p class="muted" id="cliInfoHist">Selecione um cliente para ver o histórico.</p>
-<div class="item-list" id="cliHistorico"><p class="muted">Sem histórico.</p></div>
-</div>
-</div>
-</section>
-<!-- AGENDA -->
-<section class="panel" id="agenda">
-<div class="list-grid">
-<div class="card">
-<h3>Novo agendamento</h3>
-<div class="quick-sale form-grid">
-<label>Cliente<select data-placeholder-ready="true" id="agCliente" onchange="handleClienteRedirect('agCliente',true)"><option disabled="" selected="" value="">Selecionar</option></select></label>
-<label>Data<input aria-label="Selecionar data" autocomplete="off" class="native-picker-field native-date-picker" data-fixed-year="2026" data-native-picker="date" id="agData" max="2026-12-31" min="2026-01-01" type="date" value="2026-01-01"/><small class="native-picker-hint">Toque para abrir o calendário. Ano fixo em 2026.</small></label>
-<label>Horário<input aria-label="Selecionar horário" autocomplete="off" class="native-picker-field native-time-picker" data-native-picker="time" id="agHora" step="300" type="time"/><small class="native-picker-hint">Toque para abrir o seletor de horário.</small></label>
-<label>Valor previsto<input id="agValor" placeholder="0,00"/></label>
-</div>
-<div style="margin-top:1rem">
-<p class="muted" style="margin-bottom:.75rem;font-size:var(--text-sm)">Serviços do atendimento</p>
-<div id="agServicosContainer"></div>
-<button class="btn btn-secondary btn-sm" onclick="addServicoAgRow()" style="margin-top:.75rem">+ Adicionar serviço</button>
-</div>
-<div class="actions"><button class="btn btn-primary" onclick="addAgendamento()">Agendar horário</button></div>
-</div>
-<div class="card"><h3>Agendamentos do dia</h3><div class="item-list" id="agLista"><p class="muted">Nenhum agendamento.</p></div></div>
-</div>
-</section>
-<!-- BACKUP -->
-<section class="panel" id="backup">
-<div class="list-grid">
-<div class="card">
-<h3>Backup manual</h3>
-<p class="muted" style="margin-bottom:var(--space-4)">Os dados agora ficam salvos neste aparelho automaticamente. Exporte o JSON para backup e restaure quando quiser.</p>
-<div class="actions">
-<button class="btn btn-primary" onclick="exportBackup()">💾 Fazer backup agora</button>
-<button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">📂 Restaurar backup</button>
-<button class="btn btn-secondary" onclick="clearAllData()">🗑️ Apagar dados do aparelho</button>
-</div>
-<input accept="application/json" id="restoreFile" onchange="importBackup(event)" style="display:none" type="file"/>
-</div>
-<div class="card">
-<h3>Configurações de backup</h3>
-<label style="margin-bottom:1rem">Frequência de lembrete
-            <select data-placeholder-ready="true" id="backupFreq"><option disabled="" selected="" value="">Selecionar</option><option value="nunca">Nunca</option><option value="semanal">Semanal</option><option value="quinzenal">Quinzenal</option></select>
-</label>
-<div class="split"><span>Último backup</span><strong id="lastBackup">Nenhum realizado</strong></div>
-<div class="split"><span>Total de registros</span><strong id="backupCount">0</strong></div>
-<div class="split"><span>Status</span><strong id="backupStatus" style="color:#8ee08e">Pronto para exportar</strong></div>
-</div>
-</div>
-<div class="card">
-<h3>Conteúdo do backup</h3>
-<div class="item-list">
-<div class="item"><div><strong>Serviços / Produtos</strong><small>Cadastro com preços e status</small></div><strong id="countServicos">0</strong></div>
-<div class="item"><div><strong>Clientes</strong><small>Cadastro e histórico de visitas</small></div><strong id="countClientes">0</strong></div>
-<div class="item"><div><strong>Vendas</strong><small>Movimento financeiro registrado</small></div><strong id="countVendas">0</strong></div>
-<div class="item"><div><strong>Agendamentos</strong><small>Agenda com status de confirmação</small></div><strong id="countAgenda">0</strong></div>
-</div>
-</div>
-</section>
-</main>
-</div>
+
 <!-- MODAL NOVA VENDA -->
 <div class="modal-overlay" id="saleModal">
-<div class="modal-card">
-<h3>Nova venda</h3>
-<div class="quick-sale form-grid">
-<label>Forma de pagamento<select data-placeholder-ready="true" id="salePagamento"><option disabled="" selected="" value="">Selecionar</option><option>Dinheiro</option><option>Débito</option><option>Crédito</option></select></label>
-<label>Cliente<select data-placeholder-ready="true" id="saleCliente" onchange="handleClienteRedirect('saleCliente')"><option disabled="" selected="" value="">Selecionar</option></select></label>
-<label>Observação<input id="saleObs" placeholder="Opcional"/></label>
+  <div class="modal-card">
+    <h3>Nova venda</h3>
+    <div class="quick-sale form-grid">
+      <label>Forma de pagamento<select id="salePagamento"><option>PIX</option><option>Dinheiro</option><option>Débito</option><option>Crédito</option></select></label>
+      <label>Cliente<select id="saleCliente" onchange="handleClienteRedirect('saleCliente')"></select></label>
+      <label>Observação<input id="saleObs" placeholder="Opcional" /></label>
+    </div>
+    <div style="margin-top:1rem">
+      <p class="muted" style="margin-bottom:.75rem;font-size:var(--text-sm)">Serviços / produtos do atendimento</p>
+      <div id="saleServicosContainer"></div>
+      <button class="btn btn-secondary btn-sm" style="margin-top:.75rem" onclick="addServicoSaleRow()">+ Adicionar item</button>
+    </div>
+    <div class="total-preview" id="saleTotalPreview">Total: R$ 0,00</div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="addSale()">Salvar venda</button>
+      <button class="btn btn-secondary" onclick="closeSaleModal()">Cancelar</button>
+    </div>
+  </div>
 </div>
-<div style="margin-top:1rem">
-<p class="muted" style="margin-bottom:.75rem;font-size:var(--text-sm)">Serviços / produtos do atendimento</p>
-<div id="saleServicosContainer"></div>
-<button class="btn btn-secondary btn-sm" onclick="addServicoSaleRow()" style="margin-top:.75rem">+ Adicionar item</button>
-</div>
-<div class="total-preview" id="saleTotalPreview">Total: R$ 0,00</div>
-<div class="actions">
-<button class="btn btn-primary" onclick="addSale()">Salvar venda</button>
-<button class="btn btn-secondary" onclick="closeSaleModal()">Cancelar</button>
-</div>
-</div>
-</div>
+
 <script>
   const DEFAULT_ITENS = [
     { id:1, nome:'Corte', tipo:'servico', valor:25.00, status:'ativo' },
@@ -669,172 +651,12 @@
   loadData();
   refreshAll();
 </script>
-<script>
+
+  <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
     }
   </script>
-<script>
-(function(){
-  function normalizeSelect(select){
-    if(!select || select.dataset.placeholderApplied === 'true') return;
-    const options = Array.from(select.options || []);
-    let placeholder = options.find(opt => (opt.value || '') === '' || /selecion/i.test((opt.textContent || '').trim()));
-    if(!placeholder){
-      placeholder = document.createElement('option');
-      placeholder.value = '';
-      placeholder.textContent = 'Selecionar';
-      select.insertBefore(placeholder, select.firstChild);
-    } else if (select.firstChild !== placeholder) {
-      select.insertBefore(placeholder, select.firstChild);
-    }
-    placeholder.textContent = 'Selecionar';
-    placeholder.value = '';
-    placeholder.disabled = true;
-    placeholder.selected = true;
-    if (!select.dataset.userInteracted) select.value = '';
-    select.dataset.placeholderApplied = 'true';
-    select.addEventListener('change', function(){ this.dataset.userInteracted = 'true'; }, { once:false });
-  }
-
-  function maskDate(value){
-    let v = String(value || '').replace(/\D/g, '').slice(0, 8);
-    if (v.length > 4) return v.replace(/(\d{2})(\d{2})(\d{1,4}).*/, '$1/$2/$3');
-    if (v.length > 2) return v.replace(/(\d{2})(\d{1,2}).*/, '$1/$2');
-    return v;
-  }
-
-  function maskTime(value){
-    let v = String(value || '').replace(/\D/g, '').slice(0, 4);
-    if (v.length > 2) return v.replace(/(\d{2})(\d{1,2}).*/, '$1:$2');
-    return v;
-  }
-
-  function setupNativePicker(input, type){
-    if(!input) return;
-    input.setAttribute('type', type);
-    input.dataset.nativePicker = type;
-    input.removeAttribute('data-mask');
-    input.removeAttribute('data-mask-ready');
-    input.removeAttribute('inputmode');
-    input.removeAttribute('maxlength');
-    if(type === 'time') input.setAttribute('step', '300');
-    const openPicker = function(){ if(typeof input.showPicker === 'function'){ try { input.showPicker(); } catch(e) {} } };
-    input.addEventListener('focus', openPicker);
-    input.addEventListener('click', openPicker);
-  }
-
-  function setupMaskedInput(input, type){
-    if(!input || input.dataset.maskReady === 'true' || input.dataset.nativePicker) return;
-    input.type = 'text';
-    input.inputMode = 'numeric';
-    input.maxLength = type === 'date' ? 10 : 5;
-    input.placeholder = type === 'date' ? 'dd/mm/aaaa' : 'hh:mm';
-    input.dataset.mask = type;
-    input.dataset.maskReady = 'true';
-    input.addEventListener('input', function(){
-      this.value = type === 'date' ? maskDate(this.value) : maskTime(this.value);
-    });
-  }
-
-  function applyAll(){
-    document.querySelectorAll('select').forEach(normalizeSelect);
-    document.querySelectorAll('input[data-native-picker="date"]').forEach(el => setupNativePicker(el, 'date'));
-    document.querySelectorAll('input[data-native-picker="time"]').forEach(el => setupNativePicker(el, 'time'));
-    document.querySelectorAll('input[data-mask="date"]').forEach(el => setupMaskedInput(el, 'date'));
-    document.querySelectorAll('input[data-mask="time"]').forEach(el => setupMaskedInput(el, 'time'));
-  }
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyAll);
-  else applyAll();
-
-  const observer = new MutationObserver(function(){ applyAll(); });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-})();
-</script><script data-edit-id="fixed-year-2026-script">
-(function(){
-  function enforceFixedYear(input){
-    if(!input || input.dataset.fixedYearBound === 'true') return;
-    const fixedYear = input.dataset.fixedYear || '2026';
-    input.min = fixedYear + '-01-01';
-    input.max = fixedYear + '-12-31';
-    if(!input.value) input.value = fixedYear + '-01-01';
-
-    input.addEventListener('input', function(){
-      if(!this.value) return;
-      const parts = this.value.split('-');
-      if(parts.length === 3 && parts[0] !== fixedYear){
-        this.value = fixedYear + '-' + parts[1] + '-' + parts[2];
-      }
-      if(this.value < this.min) this.value = this.min;
-      if(this.value > this.max) this.value = this.max;
-    });
-
-    input.addEventListener('change', function(){
-      if(!this.value) return;
-      const parts = this.value.split('-');
-      if(parts.length === 3 && parts[0] !== fixedYear){
-        this.value = fixedYear + '-' + parts[1] + '-' + parts[2];
-      }
-      if(this.value < this.min) this.value = this.min;
-      if(this.value > this.max) this.value = this.max;
-    });
-
-    input.dataset.fixedYearBound = 'true';
-  }
-
-  function init(){
-    document.querySelectorAll('input[data-fixed-year="2026"]').forEach(enforceFixedYear);
-  }
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-
-  const observer = new MutationObserver(init);
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-})();
-</script>
-<script data-edit-id="total-zero-when-empty">
-(function(){
-  function formatBRL(value){
-    return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-  function findModalTotalNode(){
-    const nodes = Array.from(document.querySelectorAll('*')).filter(el => /total\s*:\s*r\$/i.test((el.textContent||'').trim()));
-    return nodes[0] || null;
-  }
-  function selectedServiceCount(){
-    const selects = Array.from(document.querySelectorAll('select'));
-    let count = 0;
-    for(const select of selects){
-      const opt = select.options[select.selectedIndex];
-      if(opt && opt.value && !/selecion/i.test((opt.textContent||''))){
-        count += 1;
-      }
-    }
-    count += document.querySelectorAll('[data-item-selecionado], .item-selecionado, .selected-item, .service-item').length;
-    return count;
-  }
-  function updateTotalWhenEmpty(){
-    const totalNode = findModalTotalNode();
-    if(!totalNode) return;
-    if(selectedServiceCount() === 0){
-      totalNode.textContent = 'Total: R$ 0,00';
-      return;
-    }
-    const currentText = totalNode.textContent || '';
-    const onlyNumbers = currentText.replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',', '.');
-    const value = Number.parseFloat(onlyNumbers);
-    totalNode.textContent = 'Total: R$ ' + formatBRL(Number.isFinite(value) ? value : 0);
-  }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', updateTotalWhenEmpty);
-  else updateTotalWhenEmpty();
-  document.addEventListener('change', updateTotalWhenEmpty, true);
-  document.addEventListener('click', function(){ setTimeout(updateTotalWhenEmpty, 0); }, true);
-  const observer = new MutationObserver(updateTotalWhenEmpty);
-  observer.observe(document.documentElement, { childList:true, subtree:true, characterData:true });
-})();
-</script>
 
 </body>
 </html>
